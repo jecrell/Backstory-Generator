@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Backstory>
+    <defName>Derp587</defName>
+    <title>Derper</title>
+    <baseDescription>Base derp derp</baseDescription>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Animals</defName>
+        <amount>-1</amount>
+      </li>
+      <li>
+        <defName>Medicine</defName>
+        <amount>5</amount>
+      </li>
+    </skillGains>
+  </Backstory>
+  <Backstory>
+    <defName>HotMama</defName>
+    <title>Hot Mama</title>
+    <baseDescription>Base derp derp</baseDescription>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Animals</defName>
+        <amount>-100</amount>
+      </li>
+    </skillGains>
+  </Backstory>
+  <Backstory>
+    <defName>KingDerp</defName>
+    <title>King Derp</title>
+    <baseDescription>Base derp derp</baseDescription>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Animals</defName>
+        <amount>-100</amount>
+      </li>
+    </skillGains>
+  </Backstory>
+  <Backstory>
+    <defName>Derp632</defName>
+    <title>Derper</title>
+    <baseDescription>Base derp derp</baseDescription>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Animals</defName>
+        <amount>-100</amount>
+      </li>
+    </skillGains>
+  </Backstory>
+  <Backstory>
+    <defName>Derp354</defName>
+    <title>Derper</title>
+    <baseDescription>Base derp derp</baseDescription>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Animals</defName>
+        <amount>-100</amount>
+      </li>
+    </skillGains>
+  </Backstory>
+</Defs>
