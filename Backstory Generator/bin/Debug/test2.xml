@@ -1,55 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Defs>
+<Defs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <JecsTools.BackstoryDef>
-    <defName>Derp587</defName>
-    <title>Derper</title>
-    <baseDescription>Base derp derp</baseDescription>
-    <slot>Adulthood</slot>
-    <skillGains>
-      <li>
-        <defName>Animals</defName>
-        <amount>-1</amount>
-      </li>
-      <li>
-        <defName>Medicine</defName>
-        <amount>5</amount>
-      </li>
-    </skillGains>
-  </JecsTools.BackstoryDef>
-  <JecsTools.BackstoryDef>
-    <defName>HotMama</defName>
-    <title>Hot Mama</title>
-    <baseDescription>Base derp derp</baseDescription>
-    <slot>Adulthood</slot>
-    <skillGains>
-      <li>
-        <defName>Animals</defName>
-        <amount>-100</amount>
-      </li>
-    </skillGains>
-  </JecsTools.BackstoryDef>
-  <JecsTools.BackstoryDef>
-    <defName>KingDerp</defName>
-    <title>King Derp</title>
-    <baseDescription>Base derp derp</baseDescription>
-    <slot>Adulthood</slot>
-    <skillGains>
-      <li>
-        <defName>Animals</defName>
-        <amount>-100</amount>
-      </li>
-      <li>
-        <defName>Artistic</defName>
-        <amount>1</amount>
-      </li>
-      <li>
-        <defName>Cooking</defName>
-        <amount>1</amount>
-      </li>
-    </skillGains>
-  </JecsTools.BackstoryDef>
-  <JecsTools.BackstoryDef>
-    <defName>Derp632</defName>
+    <defName>Derp569</defName>
     <title>Derper</title>
     <baseDescription>Base derp derp</baseDescription>
     <slot>Adulthood</slot>
@@ -61,7 +13,43 @@
     </skillGains>
   </JecsTools.BackstoryDef>
   <JecsTools.BackstoryDef>
-    <defName>Derp354</defName>
+    <defName>Derp886</defName>
+    <title>Derper</title>
+    <baseDescription>Base derp derp</baseDescription>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Animals</defName>
+        <amount>-100</amount>
+      </li>
+    </skillGains>
+  </JecsTools.BackstoryDef>
+  <JecsTools.BackstoryDef>
+    <defName>Derp608</defName>
+    <title>Derper</title>
+    <baseDescription>Base derp derp</baseDescription>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Animals</defName>
+        <amount>-100</amount>
+      </li>
+    </skillGains>
+  </JecsTools.BackstoryDef>
+  <JecsTools.BackstoryDef>
+    <defName>Derp396</defName>
+    <title>Derper</title>
+    <baseDescription>Base derp derp</baseDescription>
+    <slot>Adulthood</slot>
+    <skillGains>
+      <li>
+        <defName>Animals</defName>
+        <amount>-100</amount>
+      </li>
+    </skillGains>
+  </JecsTools.BackstoryDef>
+  <JecsTools.BackstoryDef>
+    <defName>Derp579</defName>
     <title>Derper</title>
     <baseDescription>Base derp derp</baseDescription>
     <slot>Adulthood</slot>

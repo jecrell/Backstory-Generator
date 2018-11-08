@@ -13,6 +13,7 @@ namespace Backstory_Generator
     public class Defs
     {
         [XmlElement("Backstory")]
+
         public BindingList<Backstory> Backstories;
     }
 }
