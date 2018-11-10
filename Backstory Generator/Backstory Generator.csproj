@@ -48,12 +48,19 @@
   <ItemGroup>
     <Compile Include="Backstory.cs" />
     <Compile Include="BackstoryUtility.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="Defs.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="MainDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="MainDialog.Designer.cs">
+      <DependentUpon>MainDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="GridViewUtility.cs" />
     <Compile Include="MenuStrip.cs">
@@ -67,8 +74,12 @@
     <Compile Include="SaveFiles.cs">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="TraitDefOf.cs" />
+    <EmbeddedResource Include="MainDialog.resx">
+      <DependentUpon>MainDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

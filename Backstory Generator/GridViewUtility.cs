@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace Backstory_Generator
 {
     public static class GridViewUtility
     {
-        public static void DeleteRow<T>(DataGridView viewer, List<T> list, DataGridViewCellEventArgs e)
+        public static void DeleteRow<T>(DataGridView viewer, BindingList<T> list, DataGridViewCellEventArgs e)
         {
             //if click is on new row or header row
             if (e.RowIndex == viewer.NewRowIndex || e.RowIndex < 0)
@@ -18,20 +19,18 @@ namespace Backstory_Generator
             //Check if click is on specific column 
             if (e.ColumnIndex == viewer.Columns["dataGridViewDeleteButton"].Index)
             {
-                var temp = viewer.DataSource;
-                viewer.DataSource = null;
                 list.RemoveAt(e.RowIndex);
-                GridViewUtility.UpdateView(viewer, (List<T>)temp);
             }
          }
 
-        public static async void UpdateView<T>(DataGridView viewer, List<T> dataSource)
+        public static async void UpdateView<T>(DataGridView viewer, IEnumerable<T> dataSource, int[] widths = null, List<string> hiddenColumns = null)
         {
             //Clears in-case of leftover data
             if (viewer?.Columns?.Count > 0)
                 viewer?.Columns?.Clear();
             if (viewer?.Rows?.Count > 0)
                 viewer?.Rows?.Clear();
+            viewer.DataSource = null;
             viewer.DataSource = dataSource;
             await Task.Delay(20);
 
@@ -41,27 +40,57 @@ namespace Backstory_Generator
             deleteButton.HeaderText = "Delete";
             deleteButton.Text = "X";
             deleteButton.UseColumnTextForButtonValue = true;
-            if (viewer?.Columns?.Count > 1)
-            {
-                viewer.Columns.Add(deleteButton);
-                viewer.Columns[0].Width = 75;
-                viewer.Columns[1].Width = 30;
-                viewer.Columns[2].Width = 25;
-            }
+            
+                if (hiddenColumns != null && hiddenColumns?.Count > 0)
+                {
+                    foreach (var col in hiddenColumns)
+                    {
+                        viewer.Columns.Remove(col);
+                    }
+                    viewer.Columns.Add(deleteButton);
+                }
+
+                if (widths != null)
+                {
+                    for (int i = 0; i < widths.Length; i++)
+                        viewer.Columns[i].Width = widths[i];
+                }
+                else
+                {
+                    if (viewer.Columns.Count > 2)
+                {
+
+                    viewer.Columns[0].Width = 75;
+                    viewer.Columns[1].Width = 30;
+                    viewer.Columns[2].Width = 25;
+                }
+                    else if (viewer.Columns.Count > 1)
+                {
+                    viewer.Columns[0].Width = 75;
+                    viewer.Columns[1].Width = 25;
+                }
+                else if (viewer.Columns.Count > 0)
+                {
+
+                    viewer.Columns[0].Width = 75;
+                }
+                }
+            
         }
 
-        public static void AddRow<T>(DataGridView viewer, List<T> row, T data, EventArgs e)
+
+        public static void AddRow<T>(DataGridView viewer, BindingList<T> row, T data, EventArgs e)
         {
             if (row == null)
-                row = new List<T>();
+            {
+                row = new BindingList<T>();
+                viewer.DataSource = row;
+            };
 
             if (row.FirstOrDefault(x => x.Equals(data)) != null)
                 return;
             row.Add(data);
-
-            var temp = viewer.DataSource;
-            viewer.DataSource = null;
-            GridViewUtility.UpdateView(viewer, row);
+            
         }
         
     }

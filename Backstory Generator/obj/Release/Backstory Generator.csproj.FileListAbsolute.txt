@@ -1,0 +1,10 @@
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\bin\Release\Backstory Generator.exe.config
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\bin\Release\Backstory Generator.exe
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\bin\Release\Backstory Generator.pdb
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Release\Backstory_Generator.MainDialog.resources
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Release\Backstory_Generator.SettingsDialog.resources
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Release\Backstory_Generator.Properties.Resources.resources
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Release\Backstory Generator.csproj.GenerateResource.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Release\Backstory Generator.csproj.CoreCompileInputs.cache
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Release\Backstory Generator.exe
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Release\Backstory Generator.pdb

@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Backstory_Generator
 {
-    public partial class Form1 : Form
+    public partial class MainDialog : Form
     {
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -22,6 +22,14 @@ namespace Backstory_Generator
         {
             OpenFileDialog();
         }
+
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsDialog settings = new SettingsDialog();
+            settings.ShowDialog();
+        }
+
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -43,6 +51,11 @@ namespace Backstory_Generator
                 if (result == DialogResult.Yes)
                     Save(CurrentlyLoadedFile);
             }
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

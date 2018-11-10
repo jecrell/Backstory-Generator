@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace Backstory_Generator
 
     public enum BodyType
     {
+        Any,
         Male,
         Female,
         Fat,
@@ -85,6 +87,9 @@ namespace Backstory_Generator
 
     public class TraitEntry
     {
+        [XmlIgnore]
+        public string label { get; set; }
+
         public string def { get; set; }
         public int degree { get; set; }
     }
@@ -96,31 +101,78 @@ namespace Backstory_Generator
         [XmlAttribute]
         public string Abstract { get; set; }
         
+        [XmlIgnore]
+        public string originalDefName { get; set; }
+
         public string defName { get; set; }
         public string title { get; set; }
         public string baseDescription { get; set; }
         public BodyType bodyTypeGlobal { get; set; }
+        public bool ShouldSerializebodyTypeGlobal() { return bodyTypeGlobal != BodyType.Any; }
+
         public BodyType bodyTypeMale { get; set; }
+        public bool ShouldSerializebodyTypeMale() { return bodyTypeMale != BodyType.Any; }
+
         public BodyType bodyTypeFemale { get; set; }
+        public bool ShouldSerializebodyTypeFemale() { return bodyTypeFemale != BodyType.Any; }
+
         public Slot slot { get; set; }
+
+        //RimWorld XML processes [Flag] enums with commas
+        [XmlIgnore]
         public WorkTags workDisables { get; set; }
+        [XmlElement("workDisables")]
+        public string workDisablesString
+        {
+            get { return workDisables.ToString(); }
+            set {
+
+                //Makes this compatible with a previous test release
+                //where the enums were spaced but not comma-seperated
+                var processedValue = value;
+                if (!processedValue.Contains(","))
+                    processedValue = value.Replace(" ", ", ");
+                workDisables = (WorkTags)Enum.Parse(typeof(WorkTags),value);
+            }
+        }
+
+
+        //RimWorld XML processes [Flag] enums with commas
+        [XmlIgnore]
         public WorkTags requiredWorkTags { get; set; }
+        [XmlElement("requiredWorkTags")]
+        public string requiredWorkTagsString
+        {
+            get { return requiredWorkTags.ToString(); }
+
+            set {
+
+                //Makes this compatible with a previous test release
+                //where the enums were spaced but not comma-seperated
+                var processedValue = value;
+                if (!processedValue.Contains(","))
+                    processedValue = value.Replace(" ", ", ");
+                requiredWorkTags = (WorkTags)Enum.Parse(typeof(WorkTags), processedValue);
+            }
+        }
+
+
 
         [XmlArray("forcedTraits")]
         [XmlArrayItem("li")]
-        public List<TraitEntry> forcedTraits { get; set; }
+        public BindingList<TraitEntry> forcedTraits { get; set; }
 
         [XmlArray("disallowedTraits")]
         [XmlArrayItem("li")]
-        public List<TraitEntry> disallowedTraits { get; set; }
+        public BindingList<TraitEntry> disallowedTraits { get; set; }
 
         [XmlArray("skillGains")]
         [XmlArrayItem("li")]
-        public List<SkillGain> skillGains { get; set; }
+        public BindingList<SkillGain> skillGains { get; set; }
 
         [XmlArray("spawnCategories")]
         [XmlArrayItem("li")]
-        public List<string> spawnCategories { get; set; }
+        public BindingList<string> spawnCategories { get; set; }
 
     }
 }

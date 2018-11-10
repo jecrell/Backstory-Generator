@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace Backstory_Generator
 {
-    public partial class Form1 : Form
+    public partial class MainDialog : Form
     {
 
         private void SaveFileDialog()
@@ -47,23 +47,18 @@ namespace Backstory_Generator
                 defs.Backstories = new BindingList<Backstory>();
                 //var backstories = new Backstory[10];
                 Random random = new Random();
-                for (int i = 0; i < 5; i++)
+                Backstory bs = new Backstory()
                 {
-                    Backstory bs = new Backstory()
-                    {
-                        defName = "Derp" + random.Next(100, 999),
-                        title = "Derper",
-                        baseDescription = "Base derp derp",
-                        slot = Slot.Adulthood,
-                        skillGains = new List<SkillGain>() {
-                        new SkillGain() { defName = SkillDef.Animals, amount = -100 }
-                    }
-
-                    };
-                    defs.Backstories.Add(bs);
-                    //backstories[i] = bs;
-                }
-
+                    defName = "MyFirstBackstory" + random.Next(100, 999),
+                    title = "Backstory Maker",
+                    baseDescription = "Typing at the computers during [PAWN_possessive] younger days," +
+                                      " [PAWN_nameDef] helped out with creating amazing backstories." +
+                                      " [PAWN_pronoun] made amazing mods and learned the basics of" +
+                                      " backstory creation. Unsurprisingly, this made [PAWN_objective] " +
+                                      "awesome as well.",
+                    slot = Slot.Adulthood
+                };
+                defs.Backstories.Add(bs);
                 ser.Serialize(writer, defs);
             }
             else
