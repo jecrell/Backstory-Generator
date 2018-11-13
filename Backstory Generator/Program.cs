@@ -16,7 +16,7 @@ namespace Backstory_Generator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainDialog());
+            Application.Run(new FormViewer());
         }
     }
 }

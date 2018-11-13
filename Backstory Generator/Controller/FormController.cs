@@ -1,5 +1,4 @@
-﻿using Backstory_Generator.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,13 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 using System.Xml.XPath;
 
 namespace Backstory_Generator
 {
-    public partial class MainDialog : Form
+    public class FormController
     {
+        private FormViewer formViewer;
+        public BackstoryFile LoadedBackstoryFile { get; set; }
+        public List<TraitEntry> CurrentlyLoadedTraitEntries { get; set; }
+
+        public FormController(FormViewer newFormViewer)
+        {
+            formViewer = newFormViewer;
+        }
 
         private bool TryLoadTraitEntries()
         {
@@ -58,7 +64,7 @@ namespace Backstory_Generator
 
                     string defName =
                         doc.XPathSelectElement(defRoot + defString + "[" + i + "]/defName").Value;
-                    
+
                     var degreeCount = doc.XPathSelectElements(defRoot + defString + "[" + i + "]/degreeDatas/li").Count();
 
 
@@ -87,9 +93,11 @@ namespace Backstory_Generator
             return true;
         }
 
-        private void OpenFileDialog()
+        private BackstoryFile OpenBackstoryFileDialog()
         {
-            if (!TryLoadTraitEntries()) return;
+            if (!TryLoadTraitEntries()) return null;
+
+            BackstoryFile result = null;
 
             // Displays an OpenFileDialog so the user can select a Cursor.  
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -102,49 +110,20 @@ namespace Backstory_Generator
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 // Assign the cursor in the Stream to the Form's Cursor property.  
-                OpenFile(openFileDialog1.FileName);
+                result = LoadBackstoryFile(openFileDialog1.FileName);
             }
+            return result;
         }
-
-        private void OpenFile(string fileName)
+        
+        private BackstoryFile LoadBackstoryFile(string fileName, bool newFile = false)
         {
+            var result = BackstoryFile.Load(fileName);
 
-            Defs defs = new Defs();
+            FormViewer.UpdateForm(FormViewer.UpdateEvent.LoadFile);
 
-            XmlSerializer ser = new XmlSerializer(typeof(Defs));
-            string file = File.ReadAllText(fileName);
 
-            string data = file
-                    .Replace(BackstoryUtility.ErdsPrefix + "BackstoryDef", "Backstory")
-                    .Replace(BackstoryUtility.JecsPrefix + "BackstoryDef", "Backstory");
-            
-            byte[] bytes = Encoding.UTF8.GetBytes(data);
-            Stream s = new MemoryStream(bytes);
-
-            //using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-            //{
-            defs = ser.Deserialize(s) as Defs;
-            //};
-
-            s.Close();
-
-            CurrentlyLoadedDefs = defs;
-            CurrentlyLoadedFile = fileName;
-
-            ShowFileControls(true);
-
-            UpdateListBoxes(defs);
-
-            if (BackstoryUtility.IsAlienRaceBackstory(fileName))
-            {
-                radioButtonAlienRace.Checked = true;
-            }
-            else
-            {
-                radioButtonVanilla.Checked = true;
-            }
+            return result;
         }
-
 
 
     }

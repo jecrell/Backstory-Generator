@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <AlienRace.BackstoryDef>
+    <defName>MyFirstAlienRace.BackstoryDef437</defName>
+    <title>AlienRace.BackstoryDef Maker</title>
+    <baseDescription>Typing at the computers during [PAWN_possessive] younger days, [PAWN_nameDef] helped out with creating amazing backstories. [PAWN_pronoun] made amazing mods and learned the basics of backstory creation. Unsurprisingly, this made [PAWN_objective] awesome as well.</baseDescription>
+    <slot>Adulthood</slot>
+    <workDisables>None</workDisables>
+    <requiredWorkTags>None</requiredWorkTags>
+  </AlienRace.BackstoryDef>
+</Defs>

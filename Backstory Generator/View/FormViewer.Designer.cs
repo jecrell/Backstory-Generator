@@ -1,6 +1,6 @@
 ﻿namespace Backstory_Generator
 {
-    partial class MainDialog
+    partial class FormViewer
     {
         /// <summary>
         /// Required designer variable.
@@ -52,7 +52,7 @@
             this.buttonAddWorkTypesDisabled = new System.Windows.Forms.Button();
             this.comboBoxWorkTypesDisabled = new System.Windows.Forms.ComboBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonClearRequiredWorkTags = new System.Windows.Forms.Button();
             this.richTextBoxRequiredWorkTypes = new System.Windows.Forms.RichTextBox();
             this.buttonRequiredWorkTypes = new System.Windows.Forms.Button();
             this.comboBoxRequiredWorkTypes = new System.Windows.Forms.ComboBox();
@@ -346,7 +346,7 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.button1);
+            this.groupBox5.Controls.Add(this.buttonClearRequiredWorkTags);
             this.groupBox5.Controls.Add(this.richTextBoxRequiredWorkTypes);
             this.groupBox5.Controls.Add(this.buttonRequiredWorkTypes);
             this.groupBox5.Controls.Add(this.comboBoxRequiredWorkTypes);
@@ -357,15 +357,15 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Required Work Types";
             // 
-            // button1
+            // buttonClearRequiredWorkTags
             // 
-            this.button1.Location = new System.Drawing.Point(130, 83);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(39, 23);
-            this.button1.TabIndex = 23;
-            this.button1.Text = "Clear";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.buttonClearRequiredWorkTags_Click);
+            this.buttonClearRequiredWorkTags.Location = new System.Drawing.Point(130, 83);
+            this.buttonClearRequiredWorkTags.Name = "buttonClearRequiredWorkTags";
+            this.buttonClearRequiredWorkTags.Size = new System.Drawing.Size(39, 23);
+            this.buttonClearRequiredWorkTags.TabIndex = 23;
+            this.buttonClearRequiredWorkTags.Text = "Clear";
+            this.buttonClearRequiredWorkTags.UseVisualStyleBackColor = true;
+            this.buttonClearRequiredWorkTags.Click += new System.EventHandler(this.buttonClearRequiredWorkTags_Click);
             // 
             // richTextBoxRequiredWorkTypes
             // 
@@ -500,19 +500,6 @@
             // 
             this.comboBoxTraitsForced.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTraitsForced.FormattingEnabled = true;
-            this.comboBoxTraitsForced.Items.AddRange(new object[] {
-            "Animals",
-            "Artistic",
-            "Construction",
-            "Cooking",
-            "Crafting",
-            "Intellectual",
-            "Medicine",
-            "Melee",
-            "Mining",
-            "Plants",
-            "Shooting",
-            "Social"});
             this.comboBoxTraitsForced.Location = new System.Drawing.Point(16, 97);
             this.comboBoxTraitsForced.Name = "comboBoxTraitsForced";
             this.comboBoxTraitsForced.Size = new System.Drawing.Size(138, 21);
@@ -866,9 +853,9 @@
         private System.Windows.Forms.ComboBox comboBoxBodyTypeGlobal;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.RichTextBox richTextBoxRequiredWorkTypes;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.RichTextBox richTextBoxDisabledWorkTypes;
         private System.Windows.Forms.Button buttonClearDisallowedWorkType;
+        private System.Windows.Forms.Button buttonClearRequiredWorkTags;
     }
 }
 

@@ -12,32 +12,26 @@ using System.Xml.Serialization;
 
 namespace Backstory_Generator
 {
-    public partial class MainDialog : Form
+    public enum UpdateEvent
     {
-        public string CurrentlyLoadedFile { get; set; }
-        public Defs CurrentlyLoadedDefs { get; set; }
-        public Backstory CurrentlyLoadedBackstory
-        {
-            get
-            {
-                if (CurrentlyLoadedDefs == null) return null;
-                var curIndex = 0;
-                if (listBox1.SelectedIndex > -1)
-                    curIndex = listBox1.SelectedIndex;
-                return CurrentlyLoadedDefs.Backstories.ElementAt(curIndex);
-            }
-        }
-        public int LastLoadedIndex { get; set; }
-        public List<TraitEntry> CurrentlyLoadedTraitEntries { get; set; }
+        LoadFile,
+        NewFile,
+        CloseFile
+    }
 
+    public partial class FormViewer : Form
+    {
+        private FormController formController;
 
-        public MainDialog()
+        public FormViewer()
         {
             InitializeComponent();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            formController = new FormController(this);
+
             ShowFileControls(false);
 
             comboBoxBodyTypeGlobal.DataSource = Enum.GetValues(typeof(BodyType));
@@ -46,9 +40,27 @@ namespace Backstory_Generator
             comboBoxRequiredWorkTypes.DataSource = Enum.GetValues(typeof(WorkTags));
             comboBoxWorkTypesDisabled.DataSource = Enum.GetValues(typeof(WorkTags));
             comboBoxSkills.DataSource = Enum.GetValues(typeof(SkillDef));
+        }
 
+        public void UpdateForm(UpdateEvent eventType)
+        {
+            switch (eventType)
+            {
+                case UpdateEvent.LoadFile:
+                    ShowFileControls(true);
 
+                    UpdateListBoxes(formController);
 
+                    if (BackstoryUtility.IsAlienRaceBackstory(fileName))
+                    {
+                        radioButtonAlienRace.Checked = true;
+                    }
+                    else
+                    {
+                        radioButtonVanilla.Checked = true;
+                    }
+                    break;
+            }
         }
 
         private void ShowFileControls(bool enable)
@@ -65,16 +77,17 @@ namespace Backstory_Generator
             buttonAddDefName.Enabled = enable;
         }
 
-        private void UpdateListBoxes(Defs defs)
+        private void UpdateListBoxes()
         {
-            if (defs.Backstories == null || defs.Backstories.Count == 0)
-                listBox1.DataSource = null;
-
             var currentIndex = listBox1.SelectedIndex;
+            MessageBox.Show(currentIndex.ToString());
             BindingList<string> defNames = new BindingList<string>();
-            foreach (var def in defs.Backstories)
+            foreach (var def in formController.LoadedBackstoryFile.Backstories)
                 defNames.Add(def.defName);
             listBox1.DataSource = defNames;
+            
+            ToggleAllControls(true);
+
             listBox1.SelectedIndex = currentIndex % defNames.ToArray().Length;
             ChangeDefIndex(listBox1.SelectedIndex);
 
@@ -90,39 +103,116 @@ namespace Backstory_Generator
                 comboBoxTraitsDisabled.DisplayMember = "label";
             }
 
-            if (CurrentlyLoadedBackstory != null)
+            if (LoadedBackstory != null)
             {
-                dataGridViewTraitsDisabled.DataSource = CurrentlyLoadedBackstory.disallowedTraits;
-                dataGridViewTraitsForced.DataSource = CurrentlyLoadedBackstory.forcedTraits;
+                dataGridViewTraitsDisabled.DataSource = LoadedBackstory.disallowedTraits;
+                dataGridViewTraitsForced.DataSource = LoadedBackstory.forcedTraits;
             }
 
             Updating = false;
         }
 
 
+        private void DisableAndClearAllControls()
+        {
+            ToggleAllControls(false);
+
+            ClearAllControls();
+        }
+
+        private void ClearAllControls()
+        {
+            //Clear all
+
+            //Clear text boxes
+            textBoxDefName.Text = "";
+            textBoxTitle.Text = "";
+            richTextBoxDescription.Text = "";
+            richTextBoxSpawnCategories.Text = "";
+
+            //Clear backstory type
+            radioButtonAdulthood.Checked = false;
+            radioButtonChildhood.Checked = false;
+
+            //Clear body type options
+            //comboBoxBodyTypeGlobal.SelectedValue = BodyType.Any;
+            //comboBoxBodyTypeMale.SelectedValue = BodyType.Any;
+            //comboBoxBodyTypeFemale.SelectedValue = BodyType.Any;
+
+            //Clear work types
+            richTextBoxDisabledWorkTypes.Text = "";
+            richTextBoxRequiredWorkTypes.Text = "";
+
+            //Clear skills
+            dataGridViewSkills.DataSource = null;
+
+            //Clear traits
+            dataGridViewTraitsDisabled.DataSource = null;
+            dataGridViewTraitsForced.DataSource = null;
+        }
+
+        private void ToggleAllControls(bool enabled = false)
+        {
+            //Disable all
+
+            //Disable text boxes
+            textBoxDefName.Enabled = enabled;
+            textBoxTitle.Enabled = enabled;
+            richTextBoxDescription.Enabled = enabled;
+            richTextBoxSpawnCategories.Enabled = enabled;
+
+            //Disable backstory type
+            radioButtonAdulthood.Enabled = enabled;
+            radioButtonChildhood.Enabled = enabled;
+
+            //Disable body type options
+            comboBoxBodyTypeGlobal.Enabled = enabled;
+            comboBoxBodyTypeMale.Enabled = enabled;
+            comboBoxBodyTypeFemale.Enabled = enabled;
+
+            //Disable work types
+            buttonAddWorkTypesDisabled.Enabled = enabled;
+            buttonClearDisallowedWorkType.Enabled = enabled;
+            buttonRequiredWorkTypes.Enabled = enabled;
+            buttonClearRequiredWorkTags.Enabled = enabled;
+
+            //Disable skill
+            dataGridViewSkills.Enabled = enabled;
+
+            //Disable traits
+            dataGridViewTraitsDisabled.Enabled = enabled;
+            dataGridViewTraitsForced.Enabled = enabled;
+        }
+
         private static bool Updating = false;
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         { 
-            if (!Updating)
+            if (!Updating && !newFiling)
             {
                 Updating = true;
-                UpdateListBoxes(CurrentlyLoadedDefs);
+                UpdateListBoxes(LoadedBackstoryFile);
+                
             }
+            if (newFiling)
+                newFiling = false;
         }
 
         private void ChangeDefIndex(int index, bool forced = false)
         {
             if (index < 0) return;
-            if (!forced && index == LastLoadedIndex) return;
+            if (listBox1.Items.Count > 1)
+            {
+                if (!forced && index == LastLoadedIndex) return;
+            }
 
-            if (CurrentlyLoadedBackstory.originalDefName != CurrentlyLoadedBackstory.defName)
+            if (LoadedBackstory.originalDefName != LoadedBackstory.defName)
             {
                 int nameCount = 0;
 
                 //Check for accidental double defNames
                 for (int i = 0; i < listBox1.Items.Count; i++)
                 {
-                    if (listBox1.Items[i].ToString() == CurrentlyLoadedBackstory.defName)
+                    if (listBox1.Items[i].ToString() == LoadedBackstory.defName)
                         nameCount++;
                     if (nameCount > 1)
                     {
@@ -133,38 +223,38 @@ namespace Backstory_Generator
                     }
                 }
                 
-                CurrentlyLoadedBackstory.originalDefName = CurrentlyLoadedBackstory.defName;
+                LoadedBackstory.originalDefName = LoadedBackstory.defName;
             }
 
             LastLoadedIndex = index;
 
+            
 
-            Backstory curBackstory = CurrentlyLoadedBackstory;
-
-            textBoxDefName.Text = curBackstory.defName;
-            textBoxTitle.Text = curBackstory.title;
-            richTextBoxDescription.Text = curBackstory.baseDescription;
-            radioButtonAdulthood.Checked = curBackstory.slot == Slot.Adulthood;
+            textBoxDefName.Text = LoadedBackstory.defName;
+            textBoxTitle.Text = LoadedBackstory.title;
+            richTextBoxDescription.Text = LoadedBackstory.baseDescription;
+            radioButtonAdulthood.Checked = LoadedBackstory.slot == Slot.Adulthood;
             radioButtonChildhood.Checked = !radioButtonAdulthood.Checked;
             
-            comboBoxBodyTypeGlobal.SelectedItem = CurrentlyLoadedBackstory.bodyTypeGlobal;
-            comboBoxBodyTypeMale.SelectedItem = CurrentlyLoadedBackstory.bodyTypeMale;
-            comboBoxBodyTypeFemale.SelectedItem = CurrentlyLoadedBackstory.bodyTypeFemale;
+            comboBoxBodyTypeGlobal.SelectedItem = LoadedBackstory.bodyTypeGlobal;
+            comboBoxBodyTypeMale.SelectedItem = LoadedBackstory.bodyTypeMale;
+            comboBoxBodyTypeFemale.SelectedItem = LoadedBackstory.bodyTypeFemale;
+            
 
-            UpdateAllDataViews(curBackstory);
+            UpdateAllDataViews();
         }
 
-        private void UpdateAllDataViews(Backstory curBackstory)
+        private void UpdateAllDataViews()
         {
-            GridViewUtility.UpdateView(dataGridViewSkills, curBackstory.skillGains);
-            GridViewUtility.UpdateView(dataGridViewTraitsForced, curBackstory.forcedTraits, new int[] { 75, 25, 25 }, new List<string> { "label" });
-            GridViewUtility.UpdateView(dataGridViewTraitsDisabled, curBackstory.disallowedTraits, new int[] { 75, 25, 25 }, new List<string> { "label" });
+            GridViewUtility.UpdateView(dataGridViewSkills, LoadedBackstory.skillGains);
+            GridViewUtility.UpdateView(dataGridViewTraitsForced, LoadedBackstory.forcedTraits, new int[] { 75, 25, 25 }, new List<string> { "label" });
+            GridViewUtility.UpdateView(dataGridViewTraitsDisabled, LoadedBackstory.disallowedTraits, new int[] { 75, 25, 25 }, new List<string> { "label" });
 
-            richTextBoxRequiredWorkTypes.Text = curBackstory.requiredWorkTags.ToString();
-            richTextBoxDisabledWorkTypes.Text = curBackstory.workDisables.ToString();
+            richTextBoxRequiredWorkTypes.Text = LoadedBackstory.requiredWorkTags.ToString();
+            richTextBoxDisabledWorkTypes.Text = LoadedBackstory.workDisables.ToString();
 
-            if (curBackstory.spawnCategories != null && curBackstory.spawnCategories.Count > 0)
-                richTextBoxSpawnCategories.Text = string.Join(", ", curBackstory.spawnCategories);
+            if (LoadedBackstory.spawnCategories != null && LoadedBackstory.spawnCategories.Count > 0)
+                richTextBoxSpawnCategories.Text = string.Join(", ", LoadedBackstory.spawnCategories);
             else
                 richTextBoxSpawnCategories.Text = "";
         }
@@ -173,7 +263,7 @@ namespace Backstory_Generator
         private void radioButtonChildhood_CheckedChanged(object sender, EventArgs e)
         {
             radioButtonAdulthood.Checked = !radioButtonChildhood.Checked;
-            CurrentlyLoadedBackstory.slot = Slot.Childhood;
+            LoadedBackstory.slot = Slot.Childhood;
         }
 
         private void radioButtonVanilla_CheckedChanged(object sender, EventArgs e)
@@ -190,7 +280,7 @@ namespace Backstory_Generator
         {
             //if (GetSelectedIndex() >= 0 && e.ColumnIndex == 2)
             //{
-                //GridViewUtility.DeleteRow(dataGridViewSkills, CurrentlyLoadedBackstory.skillGains, e);
+                //GridViewUtility.DeleteRow(dataGridViewSkills, LoadedBackstory.skillGains, e);
                 //var curIndex = listBox1.SelectedIndex;
                 //ChangeDefIndex(curIndex, true);
             //}
@@ -203,17 +293,22 @@ namespace Backstory_Generator
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            if (CurrentlyLoadedDefs == null) return;
+            if (LoadedBackstoryFile == null) return;
 
             if (listBox1.SelectedIndex < 0) return;
-            Backstory curBackstory = CurrentlyLoadedBackstory;
+            Backstory curBackstory = LoadedBackstory;
 
             curBackstory.defName = textBoxDefName.Text;
             curBackstory.title = textBoxTitle.Text;
             curBackstory.baseDescription = richTextBoxDescription.Text;
             curBackstory.slot = radioButtonAdulthood.Checked ? Slot.Adulthood : Slot.Childhood;
 
-            UpdateListBoxes(CurrentlyLoadedDefs);
+            if (!Updating && !newFiling)
+            {
+                Updating = true;
+                UpdateListBoxes(LoadedBackstoryFile);
+
+            }
 
         }
 
@@ -222,7 +317,7 @@ namespace Backstory_Generator
             Enum.TryParse<SkillDef>(comboBoxSkills.Items[comboBoxSkills.SelectedIndex].ToString(), out var skill);
             var newSkill = new SkillGain() { defName = skill, amount = 1 };
 
-            GridViewUtility.AddRow(dataGridViewSkills, CurrentlyLoadedBackstory.skillGains, newSkill, e);
+            GridViewUtility.AddRow(dataGridViewSkills, LoadedBackstory.skillGains, newSkill, e);
             var curIndex = listBox1.SelectedIndex;
             ChangeDefIndex(curIndex, true);
 
@@ -244,16 +339,23 @@ namespace Backstory_Generator
             string newDefName = textBoxAddDefName.Text;
             if (newDefName != string.Empty)
             {
-                if (CurrentlyLoadedDefs.Backstories.Any(x => x.defName == newDefName))
+                if (LoadedBackstoryFile.Backstories.Any(x => x.defName == newDefName))
                 {
                     MessageBox.Show("Backstory with same defName already exists. Try another defName.");
                     return;
                 }
                 var newBackstory = new Backstory { originalDefName = newDefName, defName = newDefName };
-                CurrentlyLoadedDefs.Backstories.Add(newBackstory);
+                LoadedBackstoryFile.Backstories.Add(newBackstory);
                 MessageBox.Show("Added Backstory: " + newDefName);
                 textBoxAddDefName.Text = "";
-                UpdateListBoxes(CurrentlyLoadedDefs);
+
+
+                if (!Updating && !newFiling)
+                {
+                    Updating = true;
+                    UpdateListBoxes(LoadedBackstoryFile);
+
+                }
             }
         }
 
@@ -261,7 +363,7 @@ namespace Backstory_Generator
         {
             var selectedItem = (TraitEntry)comboBoxTraitsForced.Items[comboBoxTraitsForced.SelectedIndex];
             
-            GridViewUtility.AddRow(dataGridViewTraitsForced, CurrentlyLoadedBackstory.forcedTraits, selectedItem, e);
+            GridViewUtility.AddRow(dataGridViewTraitsForced, LoadedBackstory.forcedTraits, selectedItem, e);
             var curIndex = listBox1.SelectedIndex;
             ChangeDefIndex(curIndex, true);
 
@@ -272,7 +374,7 @@ namespace Backstory_Generator
 
             var selectedItem = (TraitEntry)comboBoxTraitsDisabled.Items[comboBoxTraitsDisabled.SelectedIndex];
 
-            GridViewUtility.AddRow(dataGridViewTraitsDisabled, CurrentlyLoadedBackstory.disallowedTraits, selectedItem, e);
+            GridViewUtility.AddRow(dataGridViewTraitsDisabled, LoadedBackstory.disallowedTraits, selectedItem, e);
             var curIndex = listBox1.SelectedIndex;
             ChangeDefIndex(curIndex, true);
 
@@ -281,24 +383,24 @@ namespace Backstory_Generator
         private void buttonRequiredWorkTypes_Click(object sender, EventArgs e)
         {
 
-            if (CurrentlyLoadedDefs == null) return;
+            if (LoadedBackstoryFile == null) return;
             var box = comboBoxRequiredWorkTypes;
             var selectedItem = (WorkTags)box.SelectedItem;
 
-            CurrentlyLoadedBackstory.requiredWorkTags = CurrentlyLoadedBackstory.requiredWorkTags | selectedItem;
-            UpdateAllDataViews(CurrentlyLoadedBackstory);
+            LoadedBackstory.requiredWorkTags = LoadedBackstory.requiredWorkTags | selectedItem;
+            UpdateAllDataViews();
         }
 
         private void buttonClearRequiredWorkTags_Click(object sender, EventArgs e)
         {
-            CurrentlyLoadedBackstory.requiredWorkTags = WorkTags.None;
-            UpdateAllDataViews(CurrentlyLoadedBackstory);
+            LoadedBackstory.requiredWorkTags = WorkTags.None;
+            UpdateAllDataViews();
         }
 
         private void buttonClearDisallowedWorkType_Click(object sender, EventArgs e)
         {
-            CurrentlyLoadedBackstory.workDisables = WorkTags.None;
-            UpdateAllDataViews(CurrentlyLoadedBackstory);
+            LoadedBackstory.workDisables = WorkTags.None;
+            UpdateAllDataViews();
         }
 
         private void buttonAddWorkTypesDisabled_Click(object sender, EventArgs e)
@@ -307,35 +409,35 @@ namespace Backstory_Generator
             var box = comboBoxWorkTypesDisabled;
             var selectedItem = (WorkTags)box.SelectedItem;
 
-            CurrentlyLoadedBackstory.workDisables = CurrentlyLoadedBackstory.workDisables | selectedItem;
-            UpdateAllDataViews(CurrentlyLoadedBackstory);
+            LoadedBackstory.workDisables = LoadedBackstory.workDisables | selectedItem;
+            UpdateAllDataViews();
         }
 
 
         private void textBoxDefName_TextChanged(object sender, EventArgs e)
         {
 
-            if (CurrentlyLoadedDefs == null) return;
-            CurrentlyLoadedBackstory.defName = textBoxDefName.Text;
+            if (LoadedBackstoryFile == null) return;
+            LoadedBackstory.defName = textBoxDefName.Text;
         }
 
         private void textBoxTitle_TextChanged(object sender, EventArgs e)
         {
 
-            if (CurrentlyLoadedDefs == null) return;
-            CurrentlyLoadedBackstory.title = textBoxTitle.Text;
+            if (LoadedBackstoryFile == null) return;
+            LoadedBackstory.title = textBoxTitle.Text;
         }
 
         private void richTextBoxDescription_TextChanged(object sender, EventArgs e)
         {
 
-            if (CurrentlyLoadedDefs == null) return;
-            CurrentlyLoadedBackstory.baseDescription = richTextBoxDescription.Text;
+            if (LoadedBackstoryFile == null) return;
+            LoadedBackstory.baseDescription = richTextBoxDescription.Text;
         }
         private void richTextBoxSpawnCategories_TextChanged(object sender, EventArgs e)
         {
 
-            if (CurrentlyLoadedDefs == null) return;
+            if (LoadedBackstoryFile == null) return;
             if (richTextBoxSpawnCategories.Text == "") return;
 
             // This is a comma seperated value list. Warn the user.
@@ -347,7 +449,7 @@ namespace Backstory_Generator
             }
 
             
-            CurrentlyLoadedBackstory.spawnCategories = new BindingList<string>(richTextBoxSpawnCategories.Text.Replace(" ", "").Split(','));
+            LoadedBackstory.spawnCategories = new BindingList<string>(richTextBoxSpawnCategories.Text.Replace(" ", "").Split(','));
         }
         
 
@@ -355,39 +457,39 @@ namespace Backstory_Generator
 
         private void comboBoxBodyTypeGlobal_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (CurrentlyLoadedDefs == null) return;
+            if (LoadedBackstoryFile == null) return;
 
             var box = comboBoxBodyTypeGlobal;
             var selectedItem = (BodyType)box.Items[box.SelectedIndex];
 
-            CurrentlyLoadedBackstory.bodyTypeGlobal = selectedItem;
+            LoadedBackstory.bodyTypeGlobal = selectedItem;
 
         }
 
         private void comboBoxBodyTypeMale_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            if (CurrentlyLoadedDefs == null) return;
+            if (LoadedBackstoryFile == null) return;
             var box = comboBoxBodyTypeMale;
             var selectedItem = (BodyType)box.Items[box.SelectedIndex];
 
-            CurrentlyLoadedBackstory.bodyTypeMale = selectedItem;
+            LoadedBackstory.bodyTypeMale = selectedItem;
         }
 
         private void comboBoxBodyTypeFemale_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            if (CurrentlyLoadedDefs == null) return;
+            if (LoadedBackstoryFile == null) return;
             var box = comboBoxBodyTypeFemale;
             var selectedItem = (BodyType)box.Items[box.SelectedIndex];
 
-            CurrentlyLoadedBackstory.bodyTypeFemale = selectedItem;
+            LoadedBackstory.bodyTypeFemale = selectedItem;
         }
 
         private void radioButtonAdulthood_CheckedChanged(object sender, EventArgs e)
         {
             radioButtonChildhood.Checked = !radioButtonAdulthood.Checked;
-            CurrentlyLoadedBackstory.slot = Slot.Adulthood;
+            LoadedBackstory.slot = Slot.Adulthood;
         }
     }
 }

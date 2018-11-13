@@ -34,8 +34,12 @@ namespace Backstory_Generator
             viewer.DataSource = dataSource;
             await Task.Delay(20);
 
-            //Easy to use delete button helps users manage lists
-            var deleteButton = new DataGridViewButtonColumn();
+
+            if (viewer?.Rows?.Count > 0)
+            {
+
+             //Easy to use delete button helps users manage lists
+             var deleteButton = new DataGridViewButtonColumn();
             deleteButton.Name = "dataGridViewDeleteButton";
             deleteButton.HeaderText = "Delete";
             deleteButton.Text = "X";
@@ -58,23 +62,24 @@ namespace Backstory_Generator
                 else
                 {
                     if (viewer.Columns.Count > 2)
-                {
+                    {
 
-                    viewer.Columns[0].Width = 75;
-                    viewer.Columns[1].Width = 30;
-                    viewer.Columns[2].Width = 25;
-                }
+                        viewer.Columns[0].Width = 75;
+                        viewer.Columns[1].Width = 30;
+                        viewer.Columns[2].Width = 25;
+                    }
                     else if (viewer.Columns.Count > 1)
-                {
-                    viewer.Columns[0].Width = 75;
-                    viewer.Columns[1].Width = 25;
-                }
-                else if (viewer.Columns.Count > 0)
-                {
+                    {
+                        viewer.Columns[0].Width = 75;
+                        viewer.Columns[1].Width = 25;
+                    }
+                    else if (viewer.Columns.Count > 0)
+                    {
 
-                    viewer.Columns[0].Width = 75;
+                        viewer.Columns[0].Width = 75;
+                    }
                 }
-                }
+            }
             
         }
 

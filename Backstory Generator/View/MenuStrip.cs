@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Backstory_Generator
 {
-    public partial class MainDialog : Form
+    public partial class FormViewer : Form
     {
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -33,8 +33,8 @@ namespace Backstory_Generator
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CurrentlyLoadedDefs != null)
-                CurrentlyLoadedDefs = null;
+            if (LoadedBackstoryFile != null)
+                LoadedBackstoryFile = null;
             if (CurrentlyLoadedFile != "")
                 CurrentlyLoadedFile = "";
             ShowFileControls(false);
