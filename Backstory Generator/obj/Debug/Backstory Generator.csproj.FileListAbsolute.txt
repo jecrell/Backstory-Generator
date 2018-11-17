@@ -9,3 +9,4 @@ C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGe
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Debug\Backstory Generator.pdb
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Debug\Backstory_Generator.MainDialog.resources
 C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Debug\Backstory_Generator.SettingsDialog.resources
+C:\Program Files (x86)\Steam\steamapps\common\RimWorld\ModsWorkspace\BackstoryGenerator\Backstory Generator\Backstory Generator\obj\Debug\Backstory_Generator.FormViewer.resources

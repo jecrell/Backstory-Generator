@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Backstory_Generator.Properties;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -93,7 +95,7 @@ namespace Backstory_Generator
             return true;
         }
 
-        private BackstoryFile OpenBackstoryFileDialog()
+        public BackstoryFile OpenBackstoryFileDialog()
         {
             if (!TryLoadTraitEntries()) return null;
 
@@ -114,17 +116,143 @@ namespace Backstory_Generator
             }
             return result;
         }
-        
+
+        public BackstoryFile SaveBackstoryDialog(string prefix, bool newFile = false)
+        {
+            //if (!TryLoadTraitEntries()) return null;
+
+            BackstoryFile saveFile = null;
+
+            // Displays a SaveFileDialog so the user can save the XML 
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "XML File|*.xml";
+            saveFileDialog1.Title = "Save an XML File";
+            saveFileDialog1.ShowDialog();
+
+            // If the file name is not an empty string open it for saving.  
+            if (saveFileDialog1.FileName != "")
+            {
+                if (!File.Exists(saveFileDialog1.FileName))
+                    saveFile = new BackstoryFile(saveFileDialog1.FileName);
+
+                // Saves the Image via a FileStream created by the OpenFile method.  
+                saveFile.Serialize(prefix, !newFile);
+                MessageBox.Show("Created successfully");
+                LoadBackstoryFile(saveFileDialog1.FileName);
+
+            }
+            return saveFile;
+        }
+
         private BackstoryFile LoadBackstoryFile(string fileName, bool newFile = false)
         {
             var result = BackstoryFile.Load(fileName);
 
-            FormViewer.UpdateForm(FormViewer.UpdateEvent.LoadFile);
+            formViewer.UpdateForm(UpdateEvent.LoadFile);
 
 
             return result;
         }
 
+        internal bool Notify_RadioButtonChildhood()
+        {
+            try
+            {
+                if (LoadedBackstoryFile.SelectedBackstory.slot == Slot.Childhood)
+                {
+                    return true;
+                }
+                LoadedBackstoryFile.SelectedBackstory.slot = Slot.Childhood;
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString() + "\n" + e.StackTrace.ToString());
+            }
+            return false;
+        }
 
+        internal bool Notify_RadioButtonAdulthood()
+        {
+            try
+            {
+                if (LoadedBackstoryFile.SelectedBackstory.slot == Slot.Adulthood)
+                {
+                    return true;
+                }
+                LoadedBackstoryFile.SelectedBackstory.slot = Slot.Adulthood;
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString() + "\n" + e.StackTrace.ToString());
+            }
+            return false;
+        }
+
+        internal bool TryAddSkillGain(ComboBox comboBoxSkills)
+        {
+            try
+            {
+                Enum.TryParse<SkillDef>(comboBoxSkills.Items[comboBoxSkills.SelectedIndex].ToString(), out var skill);
+                var newSkill = new SkillGain() { defName = skill, amount = 1 };
+                formViewer.TryUpdatingBackstoryListBoxIndex(LoadedBackstoryFile.CurrentIndex, true);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString() + "\n" + e.StackTrace.ToString());
+            }
+            return false;
+        }
+
+        internal void AddNewBackstoryDef(TextBox textBoxAddDefName)
+        {
+            var newDefName = textBoxAddDefName.Text;
+            if (newDefName != string.Empty)
+            {
+                if (LoadedBackstoryFile.Backstories.Any(x => x.defName == newDefName))
+                {
+                    MessageBox.Show("Backstory with same defName already exists. Try another defName.");
+                    return;
+                }
+                var newBackstory = new Backstory { originalDefName = newDefName, defName = newDefName };
+                LoadedBackstoryFile.Backstories.Add(newBackstory);
+                MessageBox.Show("Added Backstory: " + newDefName);
+                textBoxAddDefName.Text = "";
+            }
+
+            formViewer.UpdateForm(UpdateEvent.NewDef);
+        }
+
+        internal bool TryAddForcedTrait(ComboBox comboBoxTraitsForced)
+        {
+            var selectedItem = (TraitEntry)comboBoxTraitsForced.Items[comboBoxTraitsForced.SelectedIndex];
+
+            Backstory selectedBackstory = LoadedBackstoryFile.SelectedBackstory;
+            if (selectedBackstory.forcedTraits == null)
+            {
+                selectedBackstory.forcedTraits = new BindingList<TraitEntry>();
+            }
+
+            if (selectedBackstory.forcedTraits.Any(x => x.def == selectedItem.def)) return false;
+            selectedBackstory.forcedTraits.Add(selectedItem);
+            return true;
+        }
+
+        internal bool TryAddDisallowedTrait(ComboBox comboBoxTraitsDisabled)
+        {
+            var selectedItem = (TraitEntry)comboBoxTraitsDisabled.Items[comboBoxTraitsDisabled.SelectedIndex];
+
+            Backstory selectedBackstory = LoadedBackstoryFile.SelectedBackstory;
+            if (selectedBackstory.disallowedTraits == null)
+            {
+                selectedBackstory.disallowedTraits = new BindingList<TraitEntry>();
+            }
+
+            if (selectedBackstory.disallowedTraits.Any(x => x.def == selectedItem.def)) return false;
+            selectedBackstory.disallowedTraits.Add(selectedItem);
+            return true;
+        }
+      
     }
 }

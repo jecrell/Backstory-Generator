@@ -21,13 +21,21 @@ namespace Backstory_Generator
         private string fileName;
         [XmlIgnore]
         private int selectedIndex;
+        [XmlIgnore]
+        private int prevSelectedIndex;
+
+        public int CurrentIndex { get => selectedIndex;
+            set
+            {
+                prevSelectedIndex = selectedIndex;
+                selectedIndex = value;
+            }
+        }
 
         public Backstory SelectedBackstory => Backstories[selectedIndex];
         
-        public bool IsAlienRaceBackstory(string fileName)
-        {
-                return File.ReadAllText(fileName).Contains("AlienRace.");
-        }
+        public bool IsAlienRaceBackstory => File.ReadAllText(fileName).Contains("AlienRace.");
+        
 
         public BackstoryFile()
         {
@@ -39,11 +47,7 @@ namespace Backstory_Generator
             fileName = newFileName;
             selectedIndex = -1;
         }
-
-        public void Notify_ChangedIndex(int newIndex)
-        {
-            selectedIndex = newIndex;
-        }
+        
 
         public static BackstoryFile Load(string fileName)
         {
