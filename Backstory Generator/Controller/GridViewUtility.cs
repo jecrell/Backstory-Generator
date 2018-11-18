@@ -35,52 +35,62 @@ namespace Backstory_Generator
             await Task.Delay(20);
 
 
-            if (viewer?.Rows?.Count > 0)
+            if (viewer?.Rows?.Count <= 0) return;
+            
+            //Map a quick dictionary of column names and data
+            //Remove columns we do not want displayed
+            Dictionary<string, DataGridViewColumn> map = new Dictionary<string, DataGridViewColumn>();
+            foreach (DataGridViewColumn col in viewer.Columns)
             {
+                map.Add(col.DataPropertyName, col);
+            }
+            if (hiddenColumns != null && hiddenColumns?.Count > 0 &&
+                map != null && map.Count > 0)
+            {
+                foreach (var toRemove in hiddenColumns)
+                {
+                    if (!map.ContainsKey(toRemove)) break;
+                    if (viewer.Columns.Contains(map[toRemove]))
+                        viewer.Columns.Remove(map[toRemove]);
+                }
+            }
+            map.Clear();
+            map = null;
 
-             //Easy to use delete button helps users manage lists
-             var deleteButton = new DataGridViewButtonColumn();
+
+            //Easy to use delete button helps users manage lists
+            var deleteButton = new DataGridViewButtonColumn();
             deleteButton.Name = "dataGridViewDeleteButton";
             deleteButton.HeaderText = "Delete";
             deleteButton.Text = "X";
             deleteButton.UseColumnTextForButtonValue = true;
-            
-                if (hiddenColumns != null && hiddenColumns?.Count > 0)
+            viewer.Columns.Add(deleteButton);
+
+            if (widths != null)
+            {
+                for (int i = 0; i < widths.Length; i++)
+                    viewer.Columns[i].Width = widths[i];
+            }
+            else
+            {
+                if (viewer.Columns.Count > 2)
                 {
-                    foreach (var col in hiddenColumns)
-                    {
-                        viewer.Columns.Remove(col);
-                    }
-                    viewer.Columns.Add(deleteButton);
+
+                    viewer.Columns[0].Width = 75;
+                    viewer.Columns[1].Width = 30;
+                    viewer.Columns[2].Width = 25;
                 }
-
-                if (widths != null)
+                else if (viewer.Columns.Count > 1)
                 {
-                    for (int i = 0; i < widths.Length; i++)
-                        viewer.Columns[i].Width = widths[i];
+                    viewer.Columns[0].Width = 75;
+                    viewer.Columns[1].Width = 25;
                 }
-                else
+                else if (viewer.Columns.Count > 0)
                 {
-                    if (viewer.Columns.Count > 2)
-                    {
 
-                        viewer.Columns[0].Width = 75;
-                        viewer.Columns[1].Width = 30;
-                        viewer.Columns[2].Width = 25;
-                    }
-                    else if (viewer.Columns.Count > 1)
-                    {
-                        viewer.Columns[0].Width = 75;
-                        viewer.Columns[1].Width = 25;
-                    }
-                    else if (viewer.Columns.Count > 0)
-                    {
-
-                        viewer.Columns[0].Width = 75;
-                    }
+                    viewer.Columns[0].Width = 75;
                 }
             }
-            
         }
 
 

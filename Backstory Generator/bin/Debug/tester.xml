@@ -1,11 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
   <AlienRace.BackstoryDef>
-    <defName>MyFirstAlienRace.BackstoryDef926</defName>
-    <title>AlienRace.BackstoryDef Maker</title>
+    <defName>MyFirstBackstory464</defName>
+    <title>Backstory Maker</title>
     <baseDescription>Typing at the computers during [PAWN_possessive] younger days, [PAWN_nameDef] helped out with creating amazing backstories. [PAWN_pronoun] made amazing mods and learned the basics of backstory creation. Unsurprisingly, this made [PAWN_objective] awesome as well.</baseDescription>
+    <bodyTypeGlobal>Female</bodyTypeGlobal>
+    <bodyTypeMale>Fat</bodyTypeMale>
+    <bodyTypeFemale>Hulk</bodyTypeFemale>
     <slot>Adulthood</slot>
-    <workDisables>None</workDisables>
-    <requiredWorkTags>None</requiredWorkTags>
+    <workDisables>
+      <li>Social</li>
+      <li>Firefighting</li>
+      <li>Crafting</li>
+    </workDisables>
+    <requiredWorkTags>
+      <li>Violent</li>
+      <li>Animals</li>
+    </requiredWorkTags>
+    <forcedTraits>
+      <li>
+        <defName>Bloodlust</defName>
+        <degree>0</degree>
+      </li>
+      <li>
+        <defName>NightOwl</defName>
+        <degree>0</degree>
+      </li>
+    </forcedTraits>
+    <disallowedTraits>
+      <li>
+        <defName>Pyromaniac</defName>
+        <degree>0</degree>
+      </li>
+      <li>
+        <defName>Gourmand</defName>
+        <degree>0</degree>
+      </li>
+    </disallowedTraits>
+    <skillGains>
+      <li>
+        <defName>Artistic</defName>
+        <amount>1</amount>
+      </li>
+    </skillGains>
+    <spawnCategories>
+      <li>Test</li>
+      <li>Testeroonie</li>
+    </spawnCategories>
   </AlienRace.BackstoryDef>
+  <AlienRace.BackstoryDef>
+    <defName>HaveMercy</defName>
+    <title />
+    <baseDescription />
+    <slot>Childhood</slot>
+  </AlienRace.BackstoryDef>
+  <CurrentIndex>0</CurrentIndex>
 </Defs>

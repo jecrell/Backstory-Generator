@@ -22,5 +22,22 @@ namespace Backstory_Generator
         {
             return File.ReadAllText(fileName).Contains(JecsPrefix);
         }
+
+
+        public static string RemoveSpecialCharacters(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < str.Length; i++)
+            {
+                if ((str[i] >= '0' && str[i] <= '9')
+                    || (str[i] >= 'A' && str[i] <= 'z'
+                        || (str[i] == '_')))
+                {
+                    sb.Append(str[i]);
+                }
+            }
+
+            return sb.ToString();
+        }
     }
 }

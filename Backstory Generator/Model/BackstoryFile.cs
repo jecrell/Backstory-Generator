@@ -13,7 +13,6 @@ namespace Backstory_Generator
     [XmlRoot("Defs")]
     public class BackstoryFile
     {
-
         [XmlElement("Backstory")]
         public BindingList<Backstory> Backstories;
 
@@ -24,6 +23,8 @@ namespace Backstory_Generator
         [XmlIgnore]
         private int prevSelectedIndex;
 
+        public string FilePathFileName => fileName;
+
         public int CurrentIndex { get => selectedIndex;
             set
             {
@@ -32,11 +33,10 @@ namespace Backstory_Generator
             }
         }
 
-        public Backstory SelectedBackstory => Backstories[selectedIndex];
+        public Backstory SelectedBackstory => selectedIndex >= 0 ? Backstories[selectedIndex] : null;
         
         public bool IsAlienRaceBackstory => File.ReadAllText(fileName).Contains("AlienRace.");
         
-
         public BackstoryFile()
         {
             selectedIndex = -1;
@@ -64,11 +64,12 @@ namespace Backstory_Generator
             var newBackstoryFile = ser.Deserialize(s) as BackstoryFile;
             s.Close();
 
+            newBackstoryFile.fileName = fileName;
             return newBackstoryFile;
         }
 
         //Saves the file
-        public void Serialize(string prefix, bool showMessage = false)
+        public void Save(string prefix, bool showMessage = false)
         {
                 XmlSerializer ser = new XmlSerializer(typeof(BackstoryFile));
                 TextWriter writer = new StreamWriter(fileName);
@@ -97,7 +98,8 @@ namespace Backstory_Generator
 
                 //Add prefix for better backstory functionality
                 string text = File.ReadAllText(fileName);
-                text = text.Replace("Backstory", prefix + "BackstoryDef");
+                text = text.Replace("<Backstory>", "<" + prefix + "BackstoryDef" + ">");
+                text = text.Replace("</Backstory>", "</" + prefix + "BackstoryDef" + ">");
                 text = text.Replace(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"", "");
                 File.WriteAllText(fileName, text);
 

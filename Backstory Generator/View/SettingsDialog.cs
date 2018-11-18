@@ -57,6 +57,18 @@ namespace Backstory_Generator
             Close();
         }
 
+
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+        }
+
+
         private void button4_Click(object sender, EventArgs e)
         {
             Settings.Default["RimWorldPath"] = newRimWorldPath;

@@ -39,6 +39,7 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonTitleOptions = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.comboBoxBodyTypeFemale = new System.Windows.Forms.ComboBox();
             this.labelBodyTypeFemale = new System.Windows.Forms.Label();
@@ -57,7 +58,7 @@
             this.buttonRequiredWorkTypes = new System.Windows.Forms.Button();
             this.comboBoxRequiredWorkTypes = new System.Windows.Forms.ComboBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.dataGridViewTraitsDisabled = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTraitsDisallowed = new System.Windows.Forms.DataGridView();
             this.buttonTraitsDisabledAdd = new System.Windows.Forms.Button();
             this.comboBoxTraitsDisabled = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -94,7 +95,7 @@
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTraitsDisabled)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTraitsDisallowed)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTraitsForced)).BeginInit();
             this.groupBoxSkills.SuspendLayout();
@@ -130,59 +131,68 @@
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.saveAsToolStripMenuItem.Text = "Save as...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.closeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F4)));
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(118, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(190, 6);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.settingsToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+";
+            this.settingsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Oemplus)));
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.buttonTitleOptions);
             this.groupBox1.Controls.Add(this.groupBox7);
             this.groupBox1.Controls.Add(this.groupBox6);
             this.groupBox1.Controls.Add(this.groupBox5);
@@ -208,6 +218,16 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Backstory";
+            // 
+            // buttonTitleOptions
+            // 
+            this.buttonTitleOptions.Location = new System.Drawing.Point(249, 65);
+            this.buttonTitleOptions.Name = "buttonTitleOptions";
+            this.buttonTitleOptions.Size = new System.Drawing.Size(28, 23);
+            this.buttonTitleOptions.TabIndex = 22;
+            this.buttonTitleOptions.Text = "...";
+            this.buttonTitleOptions.UseVisualStyleBackColor = true;
+            this.buttonTitleOptions.Click += new System.EventHandler(this.buttonTitleOptions_Click);
             // 
             // groupBox7
             // 
@@ -412,7 +432,7 @@
             // 
             // groupBox4
             // 
-            this.groupBox4.Controls.Add(this.dataGridViewTraitsDisabled);
+            this.groupBox4.Controls.Add(this.dataGridViewTraitsDisallowed);
             this.groupBox4.Controls.Add(this.buttonTraitsDisabledAdd);
             this.groupBox4.Controls.Add(this.comboBoxTraitsDisabled);
             this.groupBox4.Location = new System.Drawing.Point(378, 339);
@@ -420,17 +440,22 @@
             this.groupBox4.Size = new System.Drawing.Size(217, 140);
             this.groupBox4.TabIndex = 18;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Disabled Traits";
+            this.groupBox4.Text = "Disallowed Traits";
             // 
-            // dataGridViewTraitsDisabled
+            // dataGridViewTraitsDisallowed
             // 
-            this.dataGridViewTraitsDisabled.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewTraitsDisabled.ColumnHeadersVisible = false;
-            this.dataGridViewTraitsDisabled.Location = new System.Drawing.Point(16, 30);
-            this.dataGridViewTraitsDisabled.Name = "dataGridViewTraitsDisabled";
-            this.dataGridViewTraitsDisabled.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dataGridViewTraitsDisabled.Size = new System.Drawing.Size(186, 61);
-            this.dataGridViewTraitsDisabled.TabIndex = 14;
+            this.dataGridViewTraitsDisallowed.AllowUserToAddRows = false;
+            this.dataGridViewTraitsDisallowed.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewTraitsDisallowed.ColumnHeadersVisible = false;
+            this.dataGridViewTraitsDisallowed.Location = new System.Drawing.Point(16, 30);
+            this.dataGridViewTraitsDisallowed.Name = "dataGridViewTraitsDisallowed";
+            this.dataGridViewTraitsDisallowed.ReadOnly = true;
+            this.dataGridViewTraitsDisallowed.RowHeadersVisible = false;
+            this.dataGridViewTraitsDisallowed.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dataGridViewTraitsDisallowed.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.dataGridViewTraitsDisallowed.Size = new System.Drawing.Size(186, 61);
+            this.dataGridViewTraitsDisallowed.TabIndex = 14;
+            this.dataGridViewTraitsDisallowed.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewTraitsDisabled_CellContentClick);
             // 
             // buttonTraitsDisabledAdd
             // 
@@ -478,13 +503,20 @@
             // 
             // dataGridViewTraitsForced
             // 
+            this.dataGridViewTraitsForced.AllowUserToAddRows = false;
+            this.dataGridViewTraitsForced.AllowUserToDeleteRows = false;
+            this.dataGridViewTraitsForced.AllowUserToResizeRows = false;
             this.dataGridViewTraitsForced.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewTraitsForced.ColumnHeadersVisible = false;
             this.dataGridViewTraitsForced.Location = new System.Drawing.Point(16, 30);
             this.dataGridViewTraitsForced.Name = "dataGridViewTraitsForced";
+            this.dataGridViewTraitsForced.ReadOnly = true;
+            this.dataGridViewTraitsForced.RowHeadersVisible = false;
             this.dataGridViewTraitsForced.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dataGridViewTraitsForced.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridViewTraitsForced.Size = new System.Drawing.Size(186, 61);
             this.dataGridViewTraitsForced.TabIndex = 14;
+            this.dataGridViewTraitsForced.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewTraitsForced_CellContentClick);
             // 
             // buttonTraitsForcedAdd
             // 
@@ -559,11 +591,14 @@
             // 
             // dataGridViewSkills
             // 
+            this.dataGridViewSkills.AllowUserToAddRows = false;
             this.dataGridViewSkills.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewSkills.ColumnHeadersVisible = false;
             this.dataGridViewSkills.Location = new System.Drawing.Point(16, 30);
             this.dataGridViewSkills.Name = "dataGridViewSkills";
+            this.dataGridViewSkills.RowHeadersVisible = false;
             this.dataGridViewSkills.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dataGridViewSkills.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridViewSkills.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataGridViewSkills.Size = new System.Drawing.Size(186, 83);
             this.dataGridViewSkills.TabIndex = 14;
@@ -604,7 +639,7 @@
             // radioButtonAdulthood
             // 
             this.radioButtonAdulthood.AutoSize = true;
-            this.radioButtonAdulthood.Location = new System.Drawing.Point(263, 66);
+            this.radioButtonAdulthood.Location = new System.Drawing.Point(290, 66);
             this.radioButtonAdulthood.Name = "radioButtonAdulthood";
             this.radioButtonAdulthood.Size = new System.Drawing.Size(73, 17);
             this.radioButtonAdulthood.TabIndex = 8;
@@ -616,7 +651,7 @@
             // radioButtonChildhood
             // 
             this.radioButtonChildhood.AutoSize = true;
-            this.radioButtonChildhood.Location = new System.Drawing.Point(263, 46);
+            this.radioButtonChildhood.Location = new System.Drawing.Point(290, 46);
             this.radioButtonChildhood.Name = "radioButtonChildhood";
             this.radioButtonChildhood.Size = new System.Drawing.Size(72, 17);
             this.radioButtonChildhood.TabIndex = 7;
@@ -628,7 +663,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(249, 30);
+            this.label4.Location = new System.Drawing.Point(276, 30);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(81, 13);
             this.label4.TabIndex = 6;
@@ -761,8 +796,9 @@
             this.listBox1.Size = new System.Drawing.Size(180, 303);
             this.listBox1.TabIndex = 0;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
-            // MainDialog
+            // FormViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -771,7 +807,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "MainDialog";
+            this.Name = "FormViewer";
             this.Text = "RimWorld Backstory Studio";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
@@ -783,7 +819,7 @@
             this.groupBox6.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTraitsDisabled)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTraitsDisallowed)).EndInit();
             this.groupBox3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewTraitsForced)).EndInit();
             this.groupBoxSkills.ResumeLayout(false);
@@ -828,7 +864,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxSpawnCategories;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.DataGridView dataGridViewTraitsDisabled;
+        private System.Windows.Forms.DataGridView dataGridViewTraitsDisallowed;
         private System.Windows.Forms.Button buttonTraitsDisabledAdd;
         private System.Windows.Forms.ComboBox comboBoxTraitsDisabled;
         private System.Windows.Forms.GroupBox groupBox3;
@@ -856,6 +892,7 @@
         private System.Windows.Forms.RichTextBox richTextBoxDisabledWorkTypes;
         private System.Windows.Forms.Button buttonClearDisallowedWorkType;
         private System.Windows.Forms.Button buttonClearRequiredWorkTags;
+        private System.Windows.Forms.Button buttonTitleOptions;
     }
 }
 

@@ -17,7 +17,10 @@ namespace Backstory_Generator
         LoadFile,
         NewFile,
         CloseFile,
-        NewDef
+        NewDef,
+        SelectDef,
+        DeselectDef,
+        CreateFile
     }
 
     public partial class FormViewer : Form
@@ -43,33 +46,50 @@ namespace Backstory_Generator
 
             ShowFileControls(false);
             ToggleAllControls(false);
-
-            comboBoxBodyTypeGlobal.DataSource = Enum.GetValues(typeof(BodyType));
-            comboBoxBodyTypeMale.DataSource = Enum.GetValues(typeof(BodyType));
-            comboBoxBodyTypeFemale.DataSource = Enum.GetValues(typeof(BodyType));
-            comboBoxRequiredWorkTypes.DataSource = Enum.GetValues(typeof(WorkTags));
-            comboBoxWorkTypesDisabled.DataSource = Enum.GetValues(typeof(WorkTags));
-            comboBoxSkills.DataSource = Enum.GetValues(typeof(SkillDef));
         }
 
         public void UpdateForm(UpdateEvent eventType)
         {
             switch (eventType)
             {
+
+                case UpdateEvent.CreateFile:
                 case UpdateEvent.LoadFile:
                     ShowFileControls(true);
-                    UpdateListBoxes(formController);
+                    UpdateComboboxesAndDataViews(formController);
                     radioButtonAlienRace.Checked = formController.LoadedBackstoryFile.IsAlienRaceBackstory;
-                    ToggleAllControls(true);
+                    ToggleAllControls(false);
+                    UpdateListBox(formController);
+                    InitializeComboBoxes();
                     break;
                 case UpdateEvent.NewDef:
-                    UpdateListBoxes(formController);
+                    UpdateListBox(formController);
+                    UpdateComboboxesAndDataViews(formController);
+                    break;
+                case UpdateEvent.SelectDef:
+                    UpdateComboboxesAndDataViews(formController);
+                    ToggleAllControls(true);
+                    break;
+                case UpdateEvent.DeselectDef:
+                    UpdateComboboxesAndDataViews(formController);
+                    ToggleAllControls(false);
                     break;
                 case UpdateEvent.CloseFile:
                     ShowFileControls(false);
                     ToggleAllControls(false);
+                    listBox1.DataSource = null;
                     break;
             }
+        }
+
+        private void InitializeComboBoxes()
+        {
+            comboBoxBodyTypeGlobal.DataSource = Enum.GetValues(typeof(BodyType));
+            comboBoxBodyTypeMale.DataSource = Enum.GetValues(typeof(BodyType));
+            comboBoxBodyTypeFemale.DataSource = Enum.GetValues(typeof(BodyType));
+            comboBoxRequiredWorkTypes.DataSource = Enum.GetValues(typeof(WorkTags));
+            comboBoxWorkTypesDisabled.DataSource = Enum.GetValues(typeof(WorkTags));
+            comboBoxSkills.DataSource = Enum.GetValues(typeof(SkillDef));
         }
 
         private void ShowFileControls(bool enable)
@@ -86,24 +106,31 @@ namespace Backstory_Generator
             buttonAddDefName.Enabled = enable;
         }
 
-        private void UpdateListBoxes(FormController formController)
+        private void UpdateListBox(FormController formController)
         {
-            var currentIndex = listBox1.SelectedIndex;
             BindingList<string> defNames = new BindingList<string>();
             foreach (var def in formController.LoadedBackstoryFile.Backstories)
                 defNames.Add(def.defName);
             listBox1.DataSource = defNames;
+        }
 
-            //listBox1.SelectedIndex = currentIndex % defNames.ToArray().Length;
-            TryUpdatingBackstoryListBoxIndex(listBox1.SelectedIndex);
+        private void UpdateComboboxesAndDataViews(FormController formController)
+        {
+            var currentIndex = listBox1.SelectedIndex;
+            
+            //var realIndex = currentIndex % defNames.ToArray().Length;
+            if (listBox1.SelectedIndex >= 0)
+            {
+                TryUpdatingBackstoryListBoxIndex(listBox1.SelectedIndex);
 
-            if (!TryInitializingTraitsComboboxes(formController))
-            {
-                throw new Exception("Failed to initialize trait comboboxes.");
-            }
-            if (!TryInitializingTraitsDataGridViews(formController))
-            {
-                throw new Exception("Failed to initialize trait data grid views.");
+                if (!TryInitializingTraitsComboboxes(formController))
+                {
+                    throw new Exception("Failed to initialize trait comboboxes.");
+                }
+                if (!TryInitializingTraitsDataGridViews(formController))
+                {
+                    MessageBox.Show("Failed to initialize trait data grid views." + "\n\n" + Environment.StackTrace.ToString());
+                }
             }
 
             currentState = State.Viewing;
@@ -111,9 +138,9 @@ namespace Backstory_Generator
 
         private bool TryInitializingTraitsDataGridViews(FormController formController)
         {
-            if (formController.LoadedBackstoryFile.SelectedBackstory is Backstory backstory)
+            if (formController?.LoadedBackstoryFile?.SelectedBackstory is Backstory backstory)
             {
-                dataGridViewTraitsDisabled.DataSource = backstory.disallowedTraits;
+                dataGridViewTraitsDisallowed.DataSource = backstory.disallowedTraits;
                 dataGridViewTraitsForced.DataSource = backstory.forcedTraits;
                 return true;
             }
@@ -122,7 +149,7 @@ namespace Backstory_Generator
 
         private bool TryInitializingTraitsComboboxes(FormController formController)
         {
-            if (formController.CurrentlyLoadedTraitEntries is List<TraitEntry> entries)
+            if (formController?.LoadedTraitEntryFile?.entries is List<TraitEntry> entries)
             {
                 comboBoxTraitsForced.DataSource = new List<TraitEntry>(entries);
                 comboBoxTraitsForced.DisplayMember = "label";
@@ -167,7 +194,7 @@ namespace Backstory_Generator
             dataGridViewSkills.DataSource = null;
 
             //Clear traits
-            dataGridViewTraitsDisabled.DataSource = null;
+            dataGridViewTraitsDisallowed.DataSource = null;
             dataGridViewTraitsForced.DataSource = null;
         }
 
@@ -200,16 +227,17 @@ namespace Backstory_Generator
             dataGridViewSkills.Enabled = enabled;
 
             //Disable traits
-            dataGridViewTraitsDisabled.Enabled = enabled;
+            dataGridViewTraitsDisallowed.Enabled = enabled;
             dataGridViewTraitsForced.Enabled = enabled;
         }
         
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        { 
+        {
+            //MessageBox.Show(listBox1.SelectedIndex.ToString() + "\n\n" + Environment.StackTrace.ToString());
             if (currentState != State.Updating)
             {
                 currentState = State.Updating;
-                UpdateListBoxes(formController);
+                formController.SelectNewIndex(listBox1.SelectedIndex);
             }
         }
 
@@ -232,16 +260,17 @@ namespace Backstory_Generator
 
         private void UpdateAllDataViews(Backstory bs)
         {
-            GridViewUtility.UpdateView(dataGridViewSkills, bs?.skillGains);
+            GridViewUtility.UpdateView(dataGridViewSkills, bs?.skillGains,
+                bs != null ? new int[] { 125, 25, 25 } : null);
             GridViewUtility.UpdateView(dataGridViewTraitsForced, bs?.forcedTraits, 
-                bs != null ? new int[] { 75, 25, 25 } : null,
-                bs != null ? new List<string> { "label" } : null);
-            GridViewUtility.UpdateView(dataGridViewTraitsDisabled, bs?.disallowedTraits, 
-                bs != null ? new int[] { 75, 25, 25 } : null,
-                bs != null ? new List<string> { "label" } : null);
-
-            richTextBoxRequiredWorkTypes.Text = bs?.requiredWorkTags.ToString() ?? "";
-            richTextBoxDisabledWorkTypes.Text = bs?.workDisables.ToString() ?? "";
+                bs != null ? new int[] { 135, 25 } : null,
+                bs != null ? new List<string> { "defName", "degree" } : null);
+            GridViewUtility.UpdateView(dataGridViewTraitsDisallowed, bs?.disallowedTraits, 
+                bs != null ? new int[] { 135, 25 } : null,
+                bs != null ? new List<string> { "defName", "degree" } : null);
+            
+            richTextBoxRequiredWorkTypes.Text = bs?.requiredWorkTags?.FirstOrDefault() == null ? "" : string.Join(", ", bs.requiredWorkTags); //bs?.requiredWorkTags.ToString() ?? "";
+            richTextBoxDisabledWorkTypes.Text = bs?.workDisables?.FirstOrDefault() == null ? "" : string.Join(", ", bs.workDisables);//bs?.workDisables.ToString() ?? "";
 
 
             richTextBoxSpawnCategories.Text = 
@@ -254,14 +283,20 @@ namespace Backstory_Generator
 
         private void radioButtonAdulthood_CheckedChanged(object sender, EventArgs e)
         {
-            radioButtonAdulthood.Checked = formController.Notify_RadioButtonAdulthood();
-            radioButtonChildhood.Checked = !radioButtonAdulthood.Checked;
+            if (radioButtonAdulthood.Checked)
+            {
+                formController.Notify_RadioButtonAdulthood();
+                radioButtonChildhood.Checked = false;
+            }
         }
 
         private void radioButtonChildhood_CheckedChanged(object sender, EventArgs e)
         {
-            radioButtonChildhood.Checked = formController.Notify_RadioButtonChildhood();
-            radioButtonAdulthood.Checked = !radioButtonChildhood.Checked;
+            if (radioButtonChildhood.Checked)
+            {
+                formController.Notify_RadioButtonChildhood();
+                radioButtonAdulthood.Checked = false;
+            }
         }
 
         private void radioButtonVanilla_CheckedChanged(object sender, EventArgs e)
@@ -276,12 +311,12 @@ namespace Backstory_Generator
 
         private void dataGridViewSkills_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            //if (GetSelectedIndex() >= 0 && e.ColumnIndex == 2)
-            //{
-                //GridViewUtility.DeleteRow(dataGridViewSkills, LoadedBackstory.skillGains, e);
-                //var curIndex = listBox1.SelectedIndex;
-                //ChangeDefIndex(curIndex, true);
-            //}
+            // Ignore clicks that are not on button cells. 
+            if (e.RowIndex < 0 || e.ColumnIndex !=
+                dataGridViewSkills.Columns["dataGridViewDeleteButton"].Index) return;
+
+            formController.DeleteSkill(dataGridViewSkills,e);
+
         }
 
         private int GetSelectedIndex()
@@ -289,166 +324,135 @@ namespace Backstory_Generator
             return listBox1.SelectedIndex;
         }
 
-        //private void buttonSave_Click(object sender, EventArgs e)
-        //{
-        //    if (LoadedBackstoryFile == null) return;
+        private void buttonAddSkill_Click(object sender, EventArgs e) => formController.TryAddSkillGain(comboBoxSkills, dataGridViewSkills);
 
-        //    if (listBox1.SelectedIndex < 0) return;
-        //    Backstory curBackstory = LoadedBackstory;
+        private void buttonOpenFile_Click(object sender, EventArgs e) => formController.OpenBackstoryFileDialog();
 
-        //    curBackstory.defName = textBoxDefName.Text;
-        //    curBackstory.title = textBoxTitle.Text;
-        //    curBackstory.baseDescription = richTextBoxDescription.Text;
-        //    curBackstory.slot = radioButtonAdulthood.Checked ? Slot.Adulthood : Slot.Childhood;
-
-        //    if (!Updating && !newFiling)
-        //    {
-        //        Updating = true;
-        //        UpdateListBoxes(LoadedBackstoryFile);
-
-        //    }
-
-        //}
-
-        private void buttonAddSkill_Click(object sender, EventArgs e)
-        {
-            if (!formController.TryAddSkillGain(comboBoxSkills))
-            {
-                MessageBox.Show("Failed to add new skill gain setting. Perhaps skill already exists?");
-            }
-
-        }
-
-        private void buttonOpenFile_Click(object sender, EventArgs e)
-        {
-            formController.OpenBackstoryFileDialog();
-        }
-
-        private void buttonCreateFile_Click(object sender, EventArgs e)
-        {
-            formController.SaveBackstoryDialog(radioButtonAlienRace.Checked ? BackstoryUtility.ErdsPrefix : BackstoryUtility.JecsPrefix, true);
-            
-        }
+        private void buttonCreateFile_Click(object sender, EventArgs e) => formController.SaveBackstoryDialog(radioButtonAlienRace.Checked, true);            
         
-        private void buttonAddDefName_Click(object sender, EventArgs e)
-        {
-            formController.AddNewBackstoryDef(textBoxAddDefName);
-        }
+        private void buttonAddDefName_Click(object sender, EventArgs e) => formController.TryAddNewBackstoryDef(textBoxAddDefName);
 
-        private void buttonTraitsForcedAdd_Click(object sender, EventArgs e)
-        {
-            formController.TryAddForcedTrait(comboBoxTraitsForced);
-        }
+        private void buttonTraitsForcedAdd_Click(object sender, EventArgs e) => formController.TryAddForcedTrait(comboBoxTraitsForced, dataGridViewTraitsForced);
 
-        private void buttonTraitsDisabledAdd_Click(object sender, EventArgs e)
-        {
-            formController.TryAddDisallowedTrait(comboBoxTraitsDisabled);
-        }
-
-        private void buttonRequiredWorkTypes_Click(object sender, EventArgs e)
-        {
-
-            if (LoadedBackstoryFile == null) return;
-            var box = comboBoxRequiredWorkTypes;
-            var selectedItem = (WorkTags)box.SelectedItem;
-
-            LoadedBackstory.requiredWorkTags = LoadedBackstory.requiredWorkTags | selectedItem;
-            UpdateAllDataViews();
-        }
+        private void buttonTraitsDisabledAdd_Click(object sender, EventArgs e) => formController.TryAddDisallowedTrait(comboBoxTraitsDisabled, dataGridViewTraitsDisallowed);
+        
+        private void buttonRequiredWorkTypes_Click(object sender, EventArgs e) => formController.TryAddRequiredWorkType(comboBoxRequiredWorkTypes, richTextBoxRequiredWorkTypes);
+        
+        private void buttonAddWorkTypesDisabled_Click(object sender, EventArgs e) => formController.TryAddDisabledWorkType(comboBoxWorkTypesDisabled, richTextBoxDisabledWorkTypes);
 
         private void buttonClearRequiredWorkTags_Click(object sender, EventArgs e)
         {
-            LoadedBackstory.requiredWorkTags = WorkTags.None;
-            UpdateAllDataViews();
+            formController.ClearRequiredWorkTags(richTextBoxRequiredWorkTypes);
         }
 
         private void buttonClearDisallowedWorkType_Click(object sender, EventArgs e)
         {
-            LoadedBackstory.workDisables = WorkTags.None;
-            UpdateAllDataViews();
-        }
-
-        private void buttonAddWorkTypesDisabled_Click(object sender, EventArgs e)
-        {
-
-            var box = comboBoxWorkTypesDisabled;
-            var selectedItem = (WorkTags)box.SelectedItem;
-
-            LoadedBackstory.workDisables = LoadedBackstory.workDisables | selectedItem;
-            UpdateAllDataViews();
+            formController.ClearDisallowedWorkTypes(richTextBoxDisabledWorkTypes);
         }
 
 
         private void textBoxDefName_TextChanged(object sender, EventArgs e)
         {
-
-            if (LoadedBackstoryFile == null) return;
-            LoadedBackstory.defName = textBoxDefName.Text;
+            formController.AdjustDefName(textBoxDefName);
         }
 
         private void textBoxTitle_TextChanged(object sender, EventArgs e)
         {
-
-            if (LoadedBackstoryFile == null) return;
-            LoadedBackstory.title = textBoxTitle.Text;
+            formController.AdjustTitle(textBoxTitle);
         }
 
         private void richTextBoxDescription_TextChanged(object sender, EventArgs e)
         {
-
-            if (LoadedBackstoryFile == null) return;
-            LoadedBackstory.baseDescription = richTextBoxDescription.Text;
+            formController.AdjustDescription(richTextBoxDescription);
         }
         private void richTextBoxSpawnCategories_TextChanged(object sender, EventArgs e)
         {
-
-            if (LoadedBackstoryFile == null) return;
-            if (richTextBoxSpawnCategories.Text == "") return;
-
-            // This is a comma seperated value list. Warn the user.
-            if (richTextBoxSpawnCategories.Text.FirstOrDefault(x => x == ' ') != default(char) && 
-                !richTextBoxSpawnCategories.Text.Contains(','))
-            {
-                MessageBox.Show("Use commas to seperate spawn categories.\n\tE.g. RangedShooting, Tribal, Giant");
-                richTextBoxSpawnCategories.Text = richTextBoxSpawnCategories.Text.Replace(' ', ',');
-            }
-
-            
-            LoadedBackstory.spawnCategories = new BindingList<string>(richTextBoxSpawnCategories.Text.Replace(" ", "").Split(','));
+            formController.AdjustSpawnCategories(richTextBoxSpawnCategories);
         }
         
-
-
-
         private void comboBoxBodyTypeGlobal_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (LoadedBackstoryFile == null) return;
-
-            var box = comboBoxBodyTypeGlobal;
-            var selectedItem = (BodyType)box.Items[box.SelectedIndex];
-
-            LoadedBackstory.bodyTypeGlobal = selectedItem;
-
+            formController.AdjustBodyTypeGlobal(comboBoxBodyTypeGlobal);
         }
 
         private void comboBoxBodyTypeMale_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-            if (LoadedBackstoryFile == null) return;
-            var box = comboBoxBodyTypeMale;
-            var selectedItem = (BodyType)box.Items[box.SelectedIndex];
-
-            LoadedBackstory.bodyTypeMale = selectedItem;
+            formController.AdjustBodyTypeMale(comboBoxBodyTypeMale);
         }
 
         private void comboBoxBodyTypeFemale_SelectedIndexChanged(object sender, EventArgs e)
         {
+            formController.AdjustBodyTypeFemale(comboBoxBodyTypeFemale);
+        }
 
-            if (LoadedBackstoryFile == null) return;
-            var box = comboBoxBodyTypeFemale;
-            var selectedItem = (BodyType)box.Items[box.SelectedIndex];
 
-            LoadedBackstory.bodyTypeFemale = selectedItem;
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            formController.SaveBackstoryDialog();
+        }
+
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+             formController.OpenBackstoryFileDialog();
+        }
+
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SettingsDialog settings = new SettingsDialog();
+            settings.ShowDialog();
+        }
+
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            formController.CloseFile();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            formController.SaveFile(radioButtonAlienRace.Checked ? BackstoryUtility.ErdsPrefix : BackstoryUtility.JecsPrefix);
+
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            formController.SaveBackstoryDialog();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+
+        }
+
+        private void buttonTitleOptions_Click(object sender, EventArgs e)
+        {
+            formController.TitleOptionsDialog();
+        }
+
+        private void dataGridViewTraitsForced_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var viewer = dataGridViewTraitsForced;
+
+            // Ignore clicks that are not on button cells. 
+            if (e.RowIndex < 0 || e.ColumnIndex !=
+                viewer.Columns["dataGridViewDeleteButton"].Index) return;
+
+            formController.DeleteForcedTrait(viewer, e);
+
+        }
+
+        private void dataGridViewTraitsDisabled_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var viewer = dataGridViewTraitsDisallowed;
+
+            // Ignore clicks that are not on button cells. 
+            if (e.RowIndex < 0 || e.ColumnIndex !=
+                viewer.Columns["dataGridViewDeleteButton"].Index) return;
+
+            formController.DeleteDisallowedTrait(viewer, e);
         }
     }
 }
