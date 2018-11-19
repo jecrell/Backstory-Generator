@@ -23,8 +23,10 @@ namespace Backstory_Generator
         [XmlIgnore]
         private int prevSelectedIndex;
 
+        [XmlIgnore]
         public string FilePathFileName => fileName;
 
+        [XmlIgnore]
         public int CurrentIndex { get => selectedIndex;
             set
             {
@@ -33,8 +35,10 @@ namespace Backstory_Generator
             }
         }
 
+        [XmlIgnore]
         public Backstory SelectedBackstory => selectedIndex >= 0 ? Backstories[selectedIndex] : null;
         
+        [XmlIgnore]
         public bool IsAlienRaceBackstory => File.ReadAllText(fileName).Contains("AlienRace.");
         
         public BackstoryFile()

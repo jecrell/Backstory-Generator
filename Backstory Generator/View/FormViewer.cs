@@ -413,12 +413,14 @@ namespace Backstory_Generator
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             formController.SaveFile(radioButtonAlienRace.Checked ? BackstoryUtility.ErdsPrefix : BackstoryUtility.JecsPrefix);
+            formController.FlashStatusStripWithLabel("Saved.", statusStrip1, timerStatus, toolStripStatusLabel, Color.LimeGreen);
 
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            formController.SaveBackstoryDialog();
+            if (formController.SaveBackstoryDialog() is BackstoryFile bsFile)
+                formController.FlashStatusStripWithLabel("Saved at \"" + bsFile.FilePathFileName + "\"", statusStrip1, timerStatus, toolStripStatusLabel, Color.LimeGreen);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -453,6 +455,14 @@ namespace Backstory_Generator
                 viewer.Columns["dataGridViewDeleteButton"].Index) return;
 
             formController.DeleteDisallowedTrait(viewer, e);
+        }
+
+        private void timerStatus_Tick(object sender, EventArgs e)
+        {
+            statusStrip1.BackColor = SystemColors.Control;
+            toolStripStatusLabel.Text = "";
+
+            timerStatus.Enabled = false;
         }
     }
 }

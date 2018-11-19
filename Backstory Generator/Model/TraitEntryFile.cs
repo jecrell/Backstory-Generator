@@ -111,5 +111,9 @@ namespace Backstory_Generator
             return new TraitEntryFile(newTraitEntries);
         }
 
+        internal string GetDefNameByLabel(string label)
+        {
+            return entries.FirstOrDefault(x => x.label == label)?.defName ?? "";
+        }
     }
 }

@@ -64,7 +64,8 @@ namespace Backstory_Generator
             deleteButton.HeaderText = "Delete";
             deleteButton.Text = "X";
             deleteButton.UseColumnTextForButtonValue = true;
-            viewer.Columns.Add(deleteButton);
+            if (!viewer.Columns.Contains("dataGridViewDeleteButton"))
+                viewer.Columns.Add(deleteButton);
 
             if (widths != null)
             {

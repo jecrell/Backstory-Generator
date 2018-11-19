@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -406,6 +407,21 @@ namespace Backstory_Generator
             return true;
         }
 
+        internal void FlashStatusStripWithLabel(string labelString, StatusStrip statusStrip1, Timer timer, ToolStripStatusLabel labelObject, Color newColor)
+        {
+            timer.Interval = 4000;
+            timer.Enabled = true;
+            labelObject.Text = labelString;
+            statusStrip1.BackColor = newColor;
+        }
+        
+        internal void FlashStatusStripWithLabel(string labelString, StatusStrip statusStrip1, Timer timer, Label labelObject)
+        {
+            timer.Interval = 4000;
+            timer.Enabled = true;
+            labelObject.Text = labelString;
+        }
+
         internal void CloseFile()
         {
             if (LoadedBackstoryFile != null)
@@ -435,13 +451,10 @@ namespace Backstory_Generator
         internal bool DeleteSkill(DataGridView dataGridViewSkills, DataGridViewCellEventArgs e)
         {
             if (!TryGettingBackstory(out Backstory selectedBackstory)) return false;
-
-            // Retrieve Skill Name
+            
             string skillDefNameToRemove = dataGridViewSkills[0, e.RowIndex].Value.ToString();
-            MessageBox.Show(skillDefNameToRemove);
 
             var toRemove = selectedBackstory.skillGains.FirstOrDefault(x => x.defName.ToString() == skillDefNameToRemove);
-            MessageBox.Show(toRemove.defName.ToString());
 
             if (toRemove != null)
                 selectedBackstory.skillGains.Remove(toRemove);
@@ -454,13 +467,10 @@ namespace Backstory_Generator
             MessageBox.Show(e.ColumnIndex.ToString(), e.RowIndex.ToString());
             if (!TryGettingBackstory(out Backstory selectedBackstory)) return false;
 
-            // Retrieve Skill Name
-            var forcedTraitDefNameToRemove = ((TraitEntry)viewer[0, e.RowIndex].Value).defName.ToString();
-            MessageBox.Show(forcedTraitDefNameToRemove);
-
+            var forcedTraitDefNameToRemove = LoadedTraitEntryFile.GetDefNameByLabel(viewer[0, e.RowIndex].Value.ToString());
+            
             var toRemove = selectedBackstory.forcedTraits.FirstOrDefault(x => x.defName.ToString() == forcedTraitDefNameToRemove);
-            MessageBox.Show(toRemove.defName.ToString());
-
+            
             if (toRemove != null)
                 selectedBackstory.forcedTraits.Remove(toRemove);
 
@@ -472,11 +482,9 @@ namespace Backstory_Generator
             if (!TryGettingBackstory(out Backstory selectedBackstory)) return false;
 
             // Retrieve Skill Name
-            string disallowedTraitDefNameToRemove = ((TraitEntry)viewer[0, e.RowIndex].Value).defName.ToString();
-            //MessageBox.Show(disallowedTraitDefNameToRemove);
+            string disallowedTraitDefNameToRemove = LoadedTraitEntryFile.GetDefNameByLabel(viewer[0, e.RowIndex].Value.ToString());
 
             var toRemove = selectedBackstory.disallowedTraits.FirstOrDefault(x => x.defName.ToString() == disallowedTraitDefNameToRemove);
-            //MessageBox.Show(toRemove.defName.ToString());
 
             if (toRemove != null)
                 selectedBackstory.disallowedTraits.Remove(toRemove);
